@@ -54,8 +54,9 @@ public_users.get('/isbn/:isbn',function (req, res) {
     isbn-=1;
     let the_book = booklist[isbn];
         // Send the filtered_lastname array as the response to the client
+   
+    console.log("  The Review Found ", the_book.reviews );
     res.send(the_book);
-
     //return res.status(300).json({message: "Yet to be implemented 3 ", the_book });
  });
   
@@ -91,8 +92,9 @@ public_users.get('/review/:isbn',function (req, res) {
   // Filter the users array to find users whose lastName matches the extracted lastName parameter
     book_index -=1;
     let the_book = booklist[book_index];
-    //let the review = the_book;
-    res.send(the_book);
+    let the_reviews = the_book.reviews;
+    console.log("  The Review Found ", the_reviews );
+    res.send(the_reviews);
  // return res.status(300).json({message: "Yet to be implemented 6 ",the_book});
 });
 
