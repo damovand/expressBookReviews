@@ -3,7 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-
+let booklist = Object.values(books);
 
 public_users.post("/register", (req,res) => {
   //Write your code here
@@ -21,13 +21,11 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  
-   let isbn = parseInt(req.params.isbn);
+    //let booklist = Object.values(books);
+    let isbn = parseInt(req.params.isbn);
        // Filter the users array to find users whose lastName matches the extracted lastName parameter
-    isbn-=1
-    let booklist = Object.values(books);
-    let the_book = booklist[isbn]
-    //const the_book = the_key.values;
+    isbn-=1;
+    let the_book = booklist[isbn];
         // Send the filtered_lastname array as the response to the client
     res.send(the_book);
 
@@ -36,11 +34,11 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
+  
+  //let booklist = Object.values(books);
     const author = req.params.author;
   // Filter the users array to find users whose lastName matches the extracted lastName parameter
-  let booklist = Object.values(books);
-  const the_book = booklist.find(item=>item.author === author)
+  const the_book = booklist.find(item=>item.author === author);
     // Send the filtered_lastname array as the response to the client
   res.send(the_book);
   //return res.status(300).json({message: "Yet to be implemented 4 ", the_book });
@@ -49,13 +47,25 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented 5"});
+  //let booklist = Object.values(books);
+    const title = req.params.title;
+    const the_book = booklist.find(item=>item.title === title);
+    res.send(the_book);
+  //return res.status(300).json({message: "Yet to be implemented 5"});
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented 6"});
+    //let booklist = Object.values(books);
+    let book_index = parseInt(req.params.isbn);
+    console.log(req.params)
+  // Filter the users array to find users whose lastName matches the extracted lastName parameter
+    book_index -=1;
+    let the_book = booklist[book_index];
+    //let the review = the_book;
+    //res.send(the_review);
+  return res.status(300).json({message: "Yet to be implemented 6 ",the_book});
 });
 
 module.exports.general = public_users;
