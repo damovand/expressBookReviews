@@ -5,38 +5,42 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 let booklist = Object.values(books);
 
+
 // Function to check if the user exists
 const doesExist = (username) => {
-  let userswithsamename = users.filter((user) => {
-    return user.username === username;
+  let userswithsamename = users.filter((username) => {
+    return users.username === username;
   });
-  return res.status(333).json({ message: " in doesExist User examining [" , username});
-  //return userswithsamename.length > 0;
+ 
+  return userswithsamename.length > 0;
 };
 
 
 public_users.post("/register", (req,res) => {
   //Write your code here
+  //*  Note! The following extraction of values worked testingin Postman only after 
+  //   I typed in the username and password as JSON entires manually! 
   const username = req.body.username;
   const password = req.body.password;
-  console.log(" User: [", req.body,"]");
-  if (username && password) {
+    console.log(" Username: [", username,"]");
+    console.log(" Userpassword: [", password,"]");
+  
+  if (username ) {
+    console.log("  Filter Username: [", users, "]");
     if (!doesExist(username)) {
+
       users.push({ "username": username, "password": password });
-      return res.status(200).json({ message: "User successfully registered. Now you can login" });
+      return res.status(200).json({ message: "User successfully registered. ${username} Now you can login" });
     } else {
       return res.status(404).json({ message: "User already exists! " });
     }
-  }
-  
-  return res.status(404).json({ message: "Unable to register user.[", username  } );
- // return res.status(300).json({message: "Yet to be implemented 1"});
+  } 
+  return res.status(404).json({message: "Something Went Wrong - Unable to register user"});
 });
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  //Write your code here
- // return res.status(300).json({message: "Yet to be implemented 2"});
+ 
   //res.send(JSON.stringify({books}, null, 4));
     res.send(books);
 });
