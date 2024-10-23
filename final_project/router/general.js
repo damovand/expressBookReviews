@@ -5,9 +5,32 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 let booklist = Object.values(books);
 
+// Function to check if the user exists
+const doesExist = (username) => {
+  let userswithsamename = users.filter((user) => {
+    return user.username === username;
+  });
+  return res.status(333).json({ message: " in doesExist User examining [" , username});
+  //return userswithsamename.length > 0;
+};
+
+
 public_users.post("/register", (req,res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented 1"});
+  const username = req.body.username;
+  const password = req.body.password;
+  console.log(" User: [", req.body,"]");
+  if (username && password) {
+    if (!doesExist(username)) {
+      users.push({ "username": username, "password": password });
+      return res.status(200).json({ message: "User successfully registered. Now you can login" });
+    } else {
+      return res.status(404).json({ message: "User already exists! " });
+    }
+  }
+  
+  return res.status(404).json({ message: "Unable to register user.[", username  } );
+ // return res.status(300).json({message: "Yet to be implemented 1"});
 });
 
 // Get the book list available in the shop
@@ -37,6 +60,7 @@ public_users.get('/author/:author',function (req, res) {
   
   //let booklist = Object.values(books);
     const author = req.params.author;
+    console.log(" author: [", req.params,"]");
   // Filter the users array to find users whose lastName matches the extracted lastName parameter
   const the_book = booklist.find(item=>item.author === author);
     // Send the filtered_lastname array as the response to the client
@@ -64,8 +88,8 @@ public_users.get('/review/:isbn',function (req, res) {
     book_index -=1;
     let the_book = booklist[book_index];
     //let the review = the_book;
-    //res.send(the_review);
-  return res.status(300).json({message: "Yet to be implemented 6 ",the_book});
+    res.send(the_book);
+ // return res.status(300).json({message: "Yet to be implemented 6 ",the_book});
 });
 
 module.exports.general = public_users;

@@ -4,12 +4,14 @@ const session = require('express-session')
 const customer_routes = require('./router/auth_users.js').authenticated;
 const genl_routes = require('./router/general.js').general;
 
-const app = express();
+const app = express();  //Middleware to parse JSON rquest bodies
 
 app.use(express.json());
 
+// Middleware to handle sessions
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
+// Middleware to authenticate users using JWT
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
 if (req.session.authorization) { // Get the authorization object stored in the session
