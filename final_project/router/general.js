@@ -11,13 +11,13 @@ const doesExist = (the_username) => {
      
     let userswithsamename = users.filter((the_username) => {
         for (let i = 0; i < users.length; i++) {
-            console.log("Compare  the existing users  <" ,users[i].username,">","<",the_username.username,">");
-            if (users[i].username === the_username) {
+            
+            if (users[i] === the_username) {
+                console.log("Compare  the existing users  <" ,users[i].username,">","<",the_username.username,">");
                 return users[i].username ;
-
             }
         }
-        //return users.username === username;
+        console.log("  No match found ")
     });
    console.log("userwithsamename <",userswithsamename,">")
   return userswithsamename.length > 0;
