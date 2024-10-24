@@ -56,7 +56,7 @@ regd_users.post("/login", (req,res) => {
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
     const isbn = req.params.isbn;
-    let review = booklist[isbn].review
+    let review = booklist[isbn].reviews
     console.log("   the books <",review,">");
      let accessToken = req.session.authorization ;
      if ( accessToken.length == 0 )   {

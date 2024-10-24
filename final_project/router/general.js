@@ -2,6 +2,7 @@ const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+const booklist = require('./booksdb.js');
 
 const public_users = express.Router();
 
@@ -55,25 +56,23 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-    //let booklist = Object.values(books);
+  
     let isbn = parseInt(req.params.isbn);
        // Filter the users array to find users whose lastName matches the extracted lastName parameter
     isbn-=1;
     let the_book = booklist[isbn];
         // Send the filtered_lastname array as the response to the client
    
-    console.log("  The Review Found ", the_book.reviews );
+    console.log("  The Review Found ", the_book);
     res.send(the_book);
     //return res.status(300).json({message: "Yet to be implemented 3 ", the_book });
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  
-  //let booklist = Object.values(books);
+
     const author = req.params.author;
-    console.log(" author: [", req.params,"]");
+
   // Filter the users array to find users whose lastName matches the extracted lastName parameter
   const the_book = booklist.find(item=>item.author === author);
     // Send the filtered_lastname array as the response to the client
@@ -83,8 +82,7 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  //let booklist = Object.values(books);
+  
     const title = req.params.title;
     const the_book = booklist.find(item=>item.title === title);
     res.send(the_book);
@@ -93,8 +91,7 @@ public_users.get('/title/:title',function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-    //let booklist = Object.values(books);
+   
     let book_index = parseInt(req.params.isbn);
     console.log(req.params)
   // Filter the users array to find users whose lastName matches the extracted lastName parameter
