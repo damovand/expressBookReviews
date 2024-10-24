@@ -7,11 +7,19 @@ let booklist = Object.values(books);
 
 
 // Function to check if the user exists
-const doesExist = (username) => {
-  let userswithsamename = users.filter((username) => {
-    return users.username === username;
-  });
- 
+const doesExist = (the_username) => {
+     
+    let userswithsamename = users.filter((the_username) => {
+        for (let i = 0; i < users.length; i++) {
+            console.log("Compare  the existing users  <" ,users[i].username,">","<",the_username.username,">");
+            if (users[i].username === the_username) {
+                return users[i].username ;
+
+            }
+        }
+        //return users.username === username;
+    });
+   console.log("userwithsamename <",userswithsamename,">")
   return userswithsamename.length > 0;
 };
 
@@ -22,11 +30,11 @@ public_users.post("/register", (req,res) => {
   //   I typed in the username and password as JSON entires manually! 
   const username = req.body.username;
   const password = req.body.password;
-    console.log(" Username: [", username,"]");
-    console.log(" Userpassword: [", password,"]");
+    //console.log(" Username: [", username,"]");
+    //console.log(" Userpassword: [", password,"]");
   
   if (username ) {
-    console.log("  Filter Username: [", users, "]");
+    
     if (!doesExist(username)) {
 
       users.push({ "username": username, "password": password });

@@ -10,6 +10,7 @@ const isValid = (username)=>{ //returns boolean
     let userswithsamename = users.filter((user) => {
     return user.username === username;
   });
+  console.log("validated user <",userswithsamename.length,">")
   return userswithsamename.length > 0;
 }
 
@@ -18,6 +19,7 @@ const authenticatedUser = (username,password)=>{ //returns boolean
     let validusers = users.filter((user) => {
     return user.username === username && user.password === password;
   });
+  console.log("authenticated user <",validusers.length,">")
   return validusers.length > 0;
 }
 
@@ -49,6 +51,11 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
+  const username = req.body.username;
+  const password = req.body.password;
+  let accessToken = req.session.authorization ;
+  console.log("username <",username,">")
+  console.log("access token <",accessToken,">")
   return res.status(300).json({message: "Yet to be implemented 23"});
 });
 
