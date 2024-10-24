@@ -54,16 +54,43 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
     const isbn = req.params.isbn;
-    let review = booklist[isbn].reviews
+    const new_review = req.params.review
+
     console.log("   the books <",review,">");
+
      let accessToken = req.session.authorization ;
      if ( accessToken.length == 0 )   {
         return res.status(403).json({message: "User is not logged in or authenticated"});
     }
     const username = accessToken.username;
-    console.log (" Enter Review for <",review,"> for < ",isbn," > by user <", username, ">");
+
+    //let reviewlist= Object.values(review);
+    // console.log (" Enter Review for <",reviewlist,"> for < ",isbn," > by user <", username, ">");
+    let the_reviews = booklist[isbn].reviews
+    let values = Object.values(the_reviews);
+    let exists = values.includes(username);
+    if (exists == true) {
+            values.review = new_review;
+    }
+    else {
+            values.reviewer = username;
+            values.review = review;
+    }
+    //Check if the there is existing reviews for this book
+
+    /*
+    if (reviewlist.length > 0 ) {
+        // Check if there is a review by this user 
+        if ( reviewList.(obj=>obj[reviewer] === username)) {
+                exists = true
+        }
+        if (exists == true ) {
+            the_review = reviewlist.find(item=>item.reviewer === username ) ; 
+        }
+              
+    }*/
+   
   return res.status(300).json({message: "Yet to be implemented 23"});
 });
 
