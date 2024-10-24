@@ -1,8 +1,12 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 let books = require("./booksdb.js");
+const booklist = require('./booksdb.js');
+
 const regd_users = express.Router();
 let users = [];
+let the_books = booklist;
+//let reviewlist = the_books.reviews;
 
 
 const isValid = (username)=>{ //returns boolean
@@ -51,11 +55,15 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  const username = req.body.username;
-  const password = req.body.password;
-  let accessToken = req.session.authorization ;
-  console.log("username <",username,">")
-  console.log("access token <",accessToken,">")
+    const isbn = req.params.isbn;
+    let review = booklist[isbn].review
+    console.log("   the books <",review,">");
+     let accessToken = req.session.authorization ;
+     if ( accessToken.length == 0 )   {
+        return res.status(403).json({message: "User is not logged in or authenticated"});
+    }
+    const username = accessToken.username;
+    console.log (" Enter Review for <",review,"> for < ",isbn," > by user <", username, ">");
   return res.status(300).json({message: "Yet to be implemented 23"});
 });
 
