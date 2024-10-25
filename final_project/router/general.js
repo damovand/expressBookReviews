@@ -67,8 +67,8 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    let booklist = Object.values(books);
-    console.log("The List === ",Object.values(books)," ===== ");
+    
+    console.log("The Object.values === ",Object.values(books)," ===== ");
     const the_author = req.params.author;
      // Filter the users array to find users whose lastName matches the extracted lastName parameter
     const the_book = booklist.find(item=>item.author === the_author);
@@ -90,11 +90,12 @@ public_users.get('/title/:title',function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
    
-    let book_index = parseInt(req.params.isbn);
+    let isbn = parseInt(req.params.isbn);
     console.log(req.params)
   // Filter the users array to find users whose lastName matches the extracted lastName parameter
-    book_index -=1;
-    let the_book = booklist[book_index];
+    isbn -=1;
+   // let the_book = booklist[book_index];
+    let the_book = books[isbn];
     let the_reviews = the_book.reviews;
     console.log("  The Review Found ", the_reviews );
     res.send(the_reviews);
