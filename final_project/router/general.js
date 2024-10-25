@@ -4,6 +4,7 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const booklist = require('./booksdb.js');
 
+
 const public_users = express.Router();
 
 
@@ -26,14 +27,10 @@ const doesExist = (the_username) => {
 
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
-  //*  Note! The following extraction of values worked testingin Postman only after 
-  //   I typed in the username and password as JSON entires manually! 
+  
   const username = req.body.username;
   const password = req.body.password;
-    //console.log(" Username: [", username,"]");
-    //console.log(" Userpassword: [", password,"]");
-  
+    
   if (username ) {
     
     if (!doesExist(username)) {
@@ -60,7 +57,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
     let isbn = parseInt(req.params.isbn);
        // Filter the users array to find users whose lastName matches the extracted lastName parameter
     isbn-=1;
-    let the_book = booklist[isbn];
+    let the_book = books[isbn];
         // Send the filtered_lastname array as the response to the client
    
     console.log("  The Review Found ", the_book);
@@ -70,21 +67,22 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
+    let booklist = Object.values(books);
+    console.log("The List === ",Object.values(books)," ===== ");
+    const the_author = req.params.author;
+     // Filter the users array to find users whose lastName matches the extracted lastName parameter
+    const the_book = booklist.find(item=>item.author === the_author);
+    console.log (" The Book <",the_book,">");
+    res.send(the_book);
 
-    const author = req.params.author;
-
-  // Filter the users array to find users whose lastName matches the extracted lastName parameter
-  const the_book = booklist.find(item=>item.author === author);
-    // Send the filtered_lastname array as the response to the client
-  res.send(the_book);
-  //return res.status(300).json({message: "Yet to be implemented 4 ", the_book });
+  //return res.status(300).json({message: "Yet to be implemented 4 " });
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   
     const title = req.params.title;
-    const the_book = booklist.find(item=>item.title === title);
+    const the_book = books.find(item=>item.title === title);
     res.send(the_book);
   //return res.status(300).json({message: "Yet to be implemented 5"});
 });

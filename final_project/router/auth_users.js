@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 let books = require("./booksdb.js");
 const booklist = require('./booksdb.js');
+//const {books,saveBooks} = require('./booksdb.js');
 
 const regd_users = express.Router();
 let users = [];
@@ -60,32 +61,58 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     console.log(" the review <",new_review,">");
 
      let accessToken = req.session.authorization ;
+     const username = req.session.authorization.username;
+
+    /*----------------------------------------------------------------------
      if ( accessToken.length == 0 )   {
         return res.status(403).json({message: "User is not logged in or authenticated"});
-    }
-    const username = accessToken.username;
+    } */
+    /*   This code works but we can get username directly from session as shown above
+    const username = accessToken.username;  
+    -----------------------------------------------------------------------*/
 
-    let values = Object.values(booklist[isbn].reviews);
+    /* ------- This entire code is not necessary --------------------------*/
+    /*  We can access the information directly from books                  */
+    /*  It doesn't matter that it is not an array                          */
+    /* The commented code worked but it updated the info in memory         */
+    /*---------------------------------------------------------------------*/
     
-    console.log(" The reivew object values  <",Object.values(booklist[isbn].reviews),">");
-    
+    /* let values = Object.values(booklist[isbn].reviews);
     let exists = Object.values(booklist[isbn].reviews).includes(username);
-    
-    console.log (" review for customer <",username,">",exists);
-    
     if (exists === false) {
         Object.values(booklist[isbn].reviews).push({
                 "reviewer":username,
                 "review":new_review
-            })
+            })  
         console.log(" Added Review<",Object.values(booklist[isbn].reviews),">")
     }
     else {
             console.log("Update existing ");
-    }
-    //Check if the there is existing reviews for this book
-   
-  return res.status(300).json({message: "Yet to be implemented 23"});
+    } */
+
+    let the_book = books[isbn];
+    
+    if (!the_book)
+        return res.status(404).json({ message: "Book not found" });
+    the_book.reviews[username] = new_review;  // Update or add review
+  //  saveBooks();  // Save changes to file
+        return res.status(200).json({ message: "Review added/updated" });
+  
+});
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    const username = req.session.authorization.username;
+/*
+    let the_book = books[isbn];
+    // confirm the book exists
+    if (!the_book)
+        return res.status(404).json({ message: "Book not found" });
+    if (the_book.reviews[username]===username){
+        books[isbn].delete(reviews);
+        saveBooks();  // Save changes to file
+        return res.status(200).json({ message: "Review for user deleted" });
+    }*/
+    return res.status(300).json({message: "Yet to be implemented 72"});
 });
 
 module.exports.authenticated = regd_users;
