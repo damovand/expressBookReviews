@@ -65,13 +65,14 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     }
     const username = accessToken.username;
 
-    //let reviewlist= Object.values(review);
-    // console.log (" Enter Review for <",reviewlist,"> for < ",isbn," > by user <", username, ">");
-   //let the_reviews = booklist[isbn].reviews
     let values = Object.values(booklist[isbn].reviews);
+    
     console.log(" The reivew object values  <",Object.values(booklist[isbn].reviews),">");
+    
     let exists = Object.values(booklist[isbn].reviews).includes(username);
+    
     console.log (" review for customer <",username,">",exists);
+    
     if (exists === false) {
         Object.values(booklist[isbn].reviews).push({
                 "reviewer":username,
