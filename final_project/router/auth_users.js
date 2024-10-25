@@ -83,18 +83,6 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
             console.log("Update existing ");
     }
     //Check if the there is existing reviews for this book
-
-    /*
-    if (reviewlist.length > 0 ) {
-        // Check if there is a review by this user 
-        if ( reviewList.(obj=>obj[reviewer] === username)) {
-                exists = true
-        }
-        if (exists == true ) {
-            the_review = reviewlist.find(item=>item.reviewer === username ) ; 
-        }
-              
-    }*/
    
   return res.status(300).json({message: "Yet to be implemented 23"});
 });
