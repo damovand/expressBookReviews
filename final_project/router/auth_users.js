@@ -55,9 +55,9 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
-    const new_review = req.params.review
+    const new_review = req.query.review
 
-    console.log("   the books <",review,">");
+    console.log(" the review <",new_review,">");
 
      let accessToken = req.session.authorization ;
      if ( accessToken.length == 0 )   {
@@ -67,15 +67,20 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
     //let reviewlist= Object.values(review);
     // console.log (" Enter Review for <",reviewlist,"> for < ",isbn," > by user <", username, ">");
-    let the_reviews = booklist[isbn].reviews
-    let values = Object.values(the_reviews);
-    let exists = values.includes(username);
-    if (exists == true) {
-            values.review = new_review;
+   //let the_reviews = booklist[isbn].reviews
+    let values = Object.values(booklist[isbn].reviews);
+    console.log(" The reivew object values  <",Object.values(booklist[isbn].reviews),">");
+    let exists = Object.values(booklist[isbn].reviews).includes(username);
+    console.log (" review for customer <",username,">",exists);
+    if (exists === false) {
+        Object.values(booklist[isbn].reviews).push({
+                "reviewer":username,
+                "review":new_review
+            })
+        console.log(" Added Review<",Object.values(booklist[isbn].reviews),">")
     }
     else {
-            values.reviewer = username;
-            values.review = review;
+            console.log("Update existing ");
     }
     //Check if the there is existing reviews for this book
 
