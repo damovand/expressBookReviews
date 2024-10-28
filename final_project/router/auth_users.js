@@ -1,4 +1,5 @@
 const fs = require('fs');
+
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const booklist = require('./booksdb.js');
@@ -9,7 +10,10 @@ function saveBooks(){
     fs.writeFileSync('./booksdb.json', JSON.stringify(books, null, 2),'utf-8');
     console.log( " Done ! Saved The Review <",books,">");
 }
-
+function loadBooks() {
+    const data = fs.readFileSync('./booksdb.json', 'utf8');
+    return JSON.parse(data);
+}   
 const regd_users = express.Router();
 let users = [];
 let the_books = booklist;
@@ -61,7 +65,7 @@ regd_users.post("/login", (req,res) => {
 regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
     const new_review = req.query.review
-
+    
     console.log(" the review <",new_review,">");
      const username = req.session.authorization.username;
     //console.log ("===== Update / insert a review for user ",username)
@@ -81,8 +85,10 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 regd_users.delete("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
     const username = req.session.authorization.username;
-/*
-    let the_book = books[isbn];
+    updated_books = loadBooks();
+    let the_book = updated_books[isbn-1];
+    console.log (" Find and delete a review from <", the_book, "> by user <",username,">");
+
     // confirm the book exists
     if (!the_book)
         return res.status(404).json({ message: "Book not found" });
@@ -90,8 +96,9 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
         books[isbn].delete(reviews);
         saveBooks();  // Save changes to file
         return res.status(200).json({ message: "Review for user deleted" });
-    }*/
-    return res.status(300).json({message: "Yet to be implemented 72"});
+    }
+    else {return res.status(300).json({message: "A review by this user for the book Not Found!"});}
+    
 });
 
 module.exports.authenticated = regd_users;
