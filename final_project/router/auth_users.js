@@ -5,7 +5,9 @@ const booklist = require('./booksdb.js');
 let books = require('./booksdb.js');
 
 function saveBooks(){
-    fs.writeFileSync('./booksdb',JSON.stringify(books,null,2),'utf-8');
+    console.log (" Save the review for book ");
+    fs.writeFileSync('./booksdb.json', JSON.stringify(books, null, 2),'utf-8');
+    console.log( " Done ! Saved The Review <",books,">");
 }
 
 const regd_users = express.Router();
@@ -65,7 +67,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     //console.log ("===== Update / insert a review for user ",username)
    
    // console.log(" ++++ Books<",books,">")  ;
-    let the_book = books[isbn];
+    let the_book = books[isbn-1];
     
     if (!the_book)
         return res.status(404).json({ message: "Book not found" });

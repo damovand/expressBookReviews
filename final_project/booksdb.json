@@ -17,9 +17,7 @@
   {
     "author": "Unknown",
     "title": "The Epic Of Gilgamesh",
-    "reviews": {
-      "Neils Bohr": "Awesome, I am impressed. This was the best book I have read!"
-    }
+    "reviews": {}
   },
   {
     "author": "Unknown",
@@ -39,7 +37,9 @@
   {
     "author": "Jane Austen",
     "title": "Pride and Prejudice",
-    "reviews": {}
+    "reviews": {
+      "Neil Armstrong": "Interesting and educational"
+    }
   },
   {
     "author": "Honoré de Balzac",
