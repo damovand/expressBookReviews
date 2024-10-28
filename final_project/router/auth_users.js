@@ -64,10 +64,12 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
-    const new_review = req.query.review
+    const review = req.query.review
     
-    console.log(" the review <",new_review,">");
-     const username = req.session.authorization.username;
+    
+    console.log(" the review <",review,">");
+    const username = req.session.authorization.username;
+    
     //console.log ("===== Update / insert a review for user ",username)
    
    // console.log(" ++++ Books<",books,">")  ;
@@ -76,8 +78,9 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     if (!the_book)
         return res.status(404).json({ message: "Book not found" });
      
-    the_book.reviews[username] = new_review;  // Update or add review
-    
+    the_book.reviews.reviewer = username;
+    the_book.reviews.review = review;  // Update or add review
+  
     saveBooks();  // Save changes to file
         return res.status(200).json({ message: "Review added/updated" });
   

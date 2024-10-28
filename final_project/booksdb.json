@@ -37,7 +37,10 @@
   {
     "author": "Jane Austen",
     "title": "Pride and Prejudice",
-    "reviews": {}
+    "reviews": {
+      "reviewer": "Nina",
+      "review": "Awesome!"
+    }
   },
   {
     "author": "Honoré de Balzac",
