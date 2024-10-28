@@ -10,18 +10,18 @@ const public_users = express.Router();
 
 // Function to check if the user exists
 const doesExist = (the_username) => {
-     
+    console.log("Compare  the existing users  <" ,users,">","<",the_username,">");
     let userswithsamename = users.filter((the_username) => {
         for (let i = 0; i < users.length; i++) {
-            
+            console.log("Comparing  <" ,users[i].username,"> with incoming user <",the_username,">");
             if (users[i] === the_username) {
-                console.log("Compare  the existing users  <" ,users[i].username,">","<",the_username.username,">");
+                
                 return users[i].username ;
             }
         }
         console.log("  No match found ")
     });
-   console.log("userwithsamename <",userswithsamename,">")
+   console.log("userwithsamename <",userswithsamename,">");
   return userswithsamename.length > 0;
 };
 
@@ -34,10 +34,11 @@ public_users.post("/register", (req,res) => {
   if (username ) {
     
     if (!doesExist(username)) {
-
+        console.log ("User <",username, "> doesn't exist ");
       users.push({ "username": username, "password": password });
-      return res.status(200).json({ message: "User successfully registered. ${username} Now you can login" });
+      return res.status(200).json({ message: "User successfully registered."} );
     } else {
+        console.log ("User <",username, "> doesn't exists ");
       return res.status(404).json({ message: "User already exists! " });
     }
   } 
