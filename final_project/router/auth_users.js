@@ -87,13 +87,14 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     const username = req.session.authorization.username;
     updated_books = loadBooks();
     let the_book = updated_books[isbn-1];
-    console.log (" Find and delete a review from <", the_book, "> by user <",username,">");
+    console.log (" Find and delete a review from <", the_book.reviews, ">by user <",username,">" );
+    console.log ("the reviewer name is <",the_book.reviews.reviewer,">");
 
     // confirm the book exists
     if (!the_book)
         return res.status(404).json({ message: "Book not found" });
-    if (the_book.reviews[username]===username){
-        books[isbn].delete(reviews);
+    if (the_book.reviews.reviewer ===username){
+        delete the_book.reviews.reviewer;
         saveBooks();  // Save changes to file
         return res.status(200).json({ message: "Review for user deleted" });
     }
