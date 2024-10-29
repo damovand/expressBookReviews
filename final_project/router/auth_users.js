@@ -77,10 +77,11 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     
     if (!the_book)
         return res.status(404).json({ message: "Book not found" });
-     
+
     the_book.reviews.reviewer = username;
     the_book.reviews.review = review;  // Update or add review
-  
+   
+   
     saveBooks();  // Save changes to file
         return res.status(200).json({ message: "Review added/updated" });
   
@@ -99,7 +100,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     if (the_book.reviews.reviewer ===username){
         delete the_book.reviews.reviewer;
         saveBooks();  // Save changes to file
-        return res.status(200).json({ message: "Review for user deleted" });
+        return res.status(200).json({ message: {"Review deleted for ":username} });
     }
     else {return res.status(300).json({message: "A review by this user for the book Not Found!"});}
     
