@@ -1,27 +1,48 @@
 const express = require('express');
-let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const booklist = require('./booksdb.js');
+let books = require("./booksdb.js");
 
 const fs = require('fs').promises; // Use the promise-based version of fs
 
-async function loadBooks() {
-    const data = await fs.readFile('./booksdb.json', 'utf8');
-    return JSON.parse(data);
+async function initialize_books() {
+    try{
+        const data = await fs.readFile('./booksdb.json', 'utf8');
+        console.log("=== The loadbooks data < ",data," >")
+        return JSON.parse(data);
+    }catch (error){
+        console.error('Error reading file:', error);
+    }   
 } 
+/*
+function loadBooks() {
+    fs.readFile('./booksdb.json', 'utf8')
+	// Handle the resolved state of the promise
+	.then((data) => { 
+		// This block will execute if the file is read successfully
+	    console.log(" in the then block ",data); 		// Print the file content to the console
+        return JSON.parse(data);
+    }) 
+	
+	 // Handle the rejected state of the promise
+	.catch((err) => { 
+		// This block will execute if there is an error reading the file
+	console.error('Error reading file:', err); // Print the error message to the console
+	});
+}*/
+/*
 async function initialize() {
     try {
-
-        const books = await loadBooks(); // Wait for the books to be loaded
-        //console.log(books); // Now you have access to the actual books object
+        let promise = await initialize_books(); // Wait for the books to be loaded
+        console.log(" In initialize () === ",promise," ===="); // Now you have access to the actual books object
     } catch (error) {
         console.error("Error loading books:", error);
     }
 }
+*/
 
-
-let persisted_books = initialize();
+let persisted_books = initialize_books();
 console.log(" persisted ",persisted_books); // Now you have access to the actual books object
 const public_users = express.Router();
 
