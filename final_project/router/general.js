@@ -4,14 +4,25 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const booklist = require('./booksdb.js');
 
-const fs = require('fs').promises; // Use the promise-based version of fs   
+const fs = require('fs').promises; // Use the promise-based version of fs
 
 async function loadBooks() {
     const data = await fs.readFile('./booksdb.json', 'utf8');
     return JSON.parse(data);
-}   
+} 
+async function initialize() {
+    try {
 
-let persisted_books = loadBooks();
+        const books = await loadBooks(); // Wait for the books to be loaded
+        //console.log(books); // Now you have access to the actual books object
+    } catch (error) {
+        console.error("Error loading books:", error);
+    }
+}
+
+
+let persisted_books = initialize();
+console.log(" persisted ",persisted_books); // Now you have access to the actual books object
 const public_users = express.Router();
 
 // Function to check if the user exists
@@ -67,8 +78,8 @@ public_users.get('/isbn/:isbn',function (req, res) {
     //let the_book = books[isbn];
     let the_book = persisted_books[isbn-1];
         // Send the filtered_lastname array as the response to the client
-    console.log ("Books Read from file <",persisted_books,">")
-    console.log("  The Review Found ", the_book);
+    //console.log ("Books Read from file <",persisted_books,">")
+    //console.log("  The Review Found ", the_book);
     res.send(the_book);
     //return res.status(300).json({message: "Yet to be implemented 3 ", the_book });
  });
