@@ -1,10 +1,17 @@
 const express = require('express');
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
-const booklist = require('./booksdb.js');
-//let books = require("./booksdb.js");
+//const booklist = require('./booksdb.js');
+let books = require("./booksdb.js");
 
 const fs = require('fs').promises; // Use the promise-based version of fs
+
+// First save books in a file
+//console.log ("Persistent books DB <", the_books, ">")
+async function saveBooks() {
+    await fs.writeFile('./booksdb.json', JSON.stringify(books, null, 2), 'utf8');
+}
+//saveBooks()
 
 async function initialize_books() {
     try{
@@ -15,6 +22,13 @@ async function initialize_books() {
         console.error('Error reading file:', error);
     }   
 } 
+let the_promise = initialize_books() ;
+let the_books = the_promise.then ((result)=>{
+    // console.log (result);
+    return result;
+});
+console.log ("Persistent books DB <", the_books, ">")
+    
 /*
 function loadBooks() {
     fs.readFile('./booksdb.json', 'utf8')
