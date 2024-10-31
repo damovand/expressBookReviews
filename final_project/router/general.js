@@ -2,7 +2,7 @@ const express = require('express');
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const booklist = require('./booksdb.js');
-let books = require("./booksdb.js");
+//let books = require("./booksdb.js");
 
 const fs = require('fs').promises; // Use the promise-based version of fs
 
@@ -42,8 +42,8 @@ async function initialize() {
 }
 */
 
-let persisted_books = initialize_books();
-console.log(" persisted ",persisted_books); // Now you have access to the actual books object
+//initialize_books();
+//console.log(" persisted ",persisted_books); // Now you have access to the actual books object
 const public_users = express.Router();
 
 // Function to check if the user exists
@@ -84,12 +84,13 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
- 
+public_users.get('/',function (req, res){
   //res.send(JSON.stringify({books}, null, 4));
-    res.send(books);
+ let persisted_books = initialize_books();
+ console.log (" Persisted Books coming out of initialize_books <", persisted_books," >");
+ let the_books = Object.values(persisted_books);
+ res.send(JSON.stringify({the_books}, null, 4));
 });
-
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   
