@@ -16,7 +16,7 @@ async function saveBooks() {
 async function initialize_books() {
     try{
         const data = await fs.readFile('./booksdb.json', 'utf8');
-        console.log("=== The loadbooks data < ",data," >")
+       // console.log("=== The loadbooks data < ",data," >")
         return JSON.parse(data);
     }catch (error){
         console.error('Error reading file:', error);

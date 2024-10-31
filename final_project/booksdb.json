@@ -7,7 +7,10 @@
   "2": {
     "author": "Hans Christian Andersen",
     "title": "Fairy tales",
-    "reviews": {}
+    "reviews": {
+      "reviewer": "Nina",
+      "review": "Amazingly Gripping!"
+    }
   },
   "3": {
     "author": "Dante Alighieri",
