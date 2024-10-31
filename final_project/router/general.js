@@ -76,7 +76,21 @@ const doesExist = (the_username) => {
    console.log("userwithsamename <",userswithsamename,">");
   return userswithsamename.length > 0;
 };
-
+public_users.get('/all', function (req, res) {
+    new Promise((resolve, reject) => {
+      resolve({"books" : books});
+    })
+      .then((result) => {
+        console.log(" the pending results <",result," >")
+        res.send(result);
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the Promise chain
+        console.error(error);
+        res.status(500).send('An error occurred');
+        reject(error);
+      });
+  });
 
 public_users.post("/register", (req,res) => {
   
@@ -110,34 +124,30 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
     let isbn = parseInt(req.params.isbn);
        // Filter the users array to find users whose lastName matches the extracted lastName parameter
-    isbn-=1;
+    //isbn-=1
     //let the_book = books[isbn];
-    let the_book = persisted_books[isbn-1];
+    let the_book = books[isbn];
         // Send the filtered_lastname array as the response to the client
-    //console.log ("Books Read from file <",persisted_books,">")
-    //console.log("  The Review Found ", the_book);
     res.send(the_book);
     //return res.status(300).json({message: "Yet to be implemented 3 ", the_book });
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    
-    console.log("The Object.values === ",Object.values(books)," ===== ");
+    let booklist = Object.values(books);
     const the_author = req.params.author;
      // Filter the users array to find users whose lastName matches the extracted lastName parameter
     const the_book = booklist.find(item=>item.author === the_author);
-    console.log (" The Book <",the_book,">");
+   // console.log (" The Book <",the_book,">");
     res.send(the_book);
-
-  //return res.status(300).json({message: "Yet to be implemented 4 " });
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   
     const title = req.params.title;
-    const the_book = books.find(item=>item.title === title);
+    let booklist = Object.values(books);
+    const the_book = booklist.find(item=>item.title === title);
     res.send(the_book);
   //return res.status(300).json({message: "Yet to be implemented 5"});
 });
