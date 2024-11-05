@@ -7,15 +7,15 @@
   "2": {
     "author": "Hans Christian Andersen",
     "title": "Fairy tales",
-    "reviews": {
-      "reviewer": "Nina",
-      "review": "Amazingly Gripping!"
-    }
+    "reviews": {}
   },
   "3": {
     "author": "Dante Alighieri",
     "title": "The Divine Comedy",
-    "reviews": {}
+    "reviews": {
+      "reviewer": "Joey",
+      "review": "Good"
+    }
   },
   "4": {
     "author": "Unknown",
