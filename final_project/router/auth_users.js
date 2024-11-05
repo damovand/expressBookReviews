@@ -94,29 +94,15 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     reviewer = req.session.authorization['username']
     updated_books = loadBooks();
     let filtered_review = updated_books[isbn]["reviews"];
-    console.log (" Find and delete a review from <", filtered_review, ">by user <",reviewer,">" );
-    if (filtered_review[reviewer]){
+    console.log (" Find and delete a review from <", filtered_review.reviewer, ">by user <",reviewer,">" );
+    if (filtered_review.reviewer){
         delete filtered_review[reviewer];
         res.send(`Reviews for the ISBN  ${isbn} posted by the user ${reviewer} deleted.`);
     }
     else{
         res.send("Can't delete, as this review has been posted by a different user");
     }
-    /*
-    let the_book = updated_books[isbn-1];
-    console.log (" Find and delete a review from <", the_book.reviews, ">by user <",username,">" );
-    console.log ("the reviewer name is <",the_book.reviews.reviewer,">");
-
-    // confirm the book exists
-    if (!the_book)
-        return res.status(404).json({ message: "Book not found" });
-    if (the_book.reviews.reviewer ===username){
-        delete the_book.reviews.reviewer;
-        saveBooks();  // Save changes to file
-        return res.status(200).json({ message: {"Deleted Review Posted By ":username} });
-    }
-    else {return res.status(300).json({message: "A review by this user for the book Not Found!"});}
-    */
+    
 });
 
 module.exports.authenticated = regd_users;
