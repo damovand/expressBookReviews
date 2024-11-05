@@ -1,171 +1,157 @@
 const express = require('express');
+const public_users = express.Router();
+let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
-//const booklist = require('./booksdb.js');
-let books = require("./booksdb.js");
-
-const fs = require('fs').promises; // Use the promise-based version of fs
-
-// First save books in a file
-//console.log ("Persistent books DB <", the_books, ">")
-async function saveBooks() {
-    await fs.writeFile('./booksdb.json', JSON.stringify(books, null, 2), 'utf8');
-}
-//saveBooks()
-
-async function initialize_books() {
-    try{
-        const data = await fs.readFile('./booksdb.json', 'utf8');
-       // console.log("=== The loadbooks data < ",data," >")
-        return JSON.parse(data);
-    }catch (error){
-        console.error('Error reading file:', error);
-    }   
-} 
-let the_promise = initialize_books() ;
-let the_books = the_promise.then ((result)=>{
-    // console.log (result);
-    return result;
-});
-console.log ("Persistent books DB <", the_books, ">")
-    
-/*
-function loadBooks() {
-    fs.readFile('./booksdb.json', 'utf8')
-	// Handle the resolved state of the promise
-	.then((data) => { 
-		// This block will execute if the file is read successfully
-	    console.log(" in the then block ",data); 		// Print the file content to the console
-        return JSON.parse(data);
-    }) 
-	
-	 // Handle the rejected state of the promise
-	.catch((err) => { 
-		// This block will execute if there is an error reading the file
-	console.error('Error reading file:', err); // Print the error message to the console
-	});
-}*/
-/*
-async function initialize() {
-    try {
-        let promise = await initialize_books(); // Wait for the books to be loaded
-        console.log(" In initialize () === ",promise," ===="); // Now you have access to the actual books object
-    } catch (error) {
-        console.error("Error loading books:", error);
-    }
-}
-*/
-
-//initialize_books();
-//console.log(" persisted ",persisted_books); // Now you have access to the actual books object
-const public_users = express.Router();
-
-// Function to check if the user exists
-const doesExist = (the_username) => {
-    console.log("Compare  the existing users  <" ,users,">","<",the_username,">");
-    let userswithsamename = users.filter((the_username) => {
-        for (let i = 0; i < users.length; i++) {
-            console.log("Comparing  <" ,users[i].username,"> with incoming user <",the_username,">");
-            if (users[i] === the_username) {
-                
-                return users[i].username ;
-            }
-        }
-        console.log("  No match found ")
-    });
-   console.log("userwithsamename <",userswithsamename,">");
-  return userswithsamename.length > 0;
-};
-public_users.get('/all', function (req, res) {
-    new Promise((resolve, reject) => {
-      resolve({"books" : books});
-    })
-      .then((result) => {
-        console.log(" the pending results <",result," >")
-        res.send(result);
-      })
-      .catch((error) => {
-        // Handle any errors that occurred during the Promise chain
-        console.error(error);
-        res.status(500).send('An error occurred');
-        reject(error);
-      });
-  });
+//const fs = require('fs').promises; // Use the promise-based version of fs
 
 public_users.post("/register", (req,res) => {
+    const username = req.body.username;
+    const password = req.body.password;
   
-  const username = req.body.username;
-  const password = req.body.password;
-    
-  if (username ) {
-    
-    if (!doesExist(username)) {
-        console.log ("User <",username, "> doesn't exist ");
-      users.push({ "username": username, "password": password });
-      return res.status(200).json({ message: "User successfully registered."} );
-    } else {
-        console.log ("User <",username, "> doesn't exists ");
-      return res.status(404).json({ message: "User already exists! " });
-    }
-  } 
-  return res.status(404).json({message: "Something Went Wrong - Unable to register user"});
-});
+    if (username && password) {
+      
+      if (!isValid(username)) { 
+        users.push({"username":username,"password":password});
+        return res.status(200).json({message: "Customer successfully registred. Now you can login"});
+      } else {
+        return res.status(404).json({message: "Customer with same username already exists!"});    
+      }
+    } 
+    return res.status(404).json({message: "Unable to register customer."});
+  });
 
-// Get the book list available in the shop
-public_users.get('/',function (req, res){
-  //res.send(JSON.stringify({books}, null, 4));
- let persisted_books = initialize_books();
- console.log (" Persisted Books coming out of initialize_books <", persisted_books," >");
- let the_books = Object.values(persisted_books);
- res.send(JSON.stringify({the_books}, null, 4));
-});
-// Get book details based on ISBN
+  // Get the book list available in the shop
+public_users.get('/',function (req, res) {
+    res.send(JSON.stringify({books}, null, 4));
+  });
+  
+  // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   
     let isbn = parseInt(req.params.isbn);
        // Filter the users array to find users whose lastName matches the extracted lastName parameter
-    //isbn-=1
-    //let the_book = books[isbn];
-    let the_book = books[isbn];
         // Send the filtered_lastname array as the response to the client
-    res.send(the_book);
-    //return res.status(300).json({message: "Yet to be implemented 3 ", the_book });
+    res.send(JSON.stringify(books[isbn], null, 4));
  });
-  
-// Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-    let booklist = Object.values(books);
-    const the_author = req.params.author;
-     // Filter the users array to find users whose lastName matches the extracted lastName parameter
-    const the_book = booklist.find(item=>item.author === the_author);
-   // console.log (" The Book <",the_book,">");
-    res.send(the_book);
-});
 
+ // Get book details based on author
+public_users.get('/author/:author',function (req, res) {
+    let booksbyauthor = [];
+  let isbns = Object.keys(books);
+  isbns.forEach((isbn) => {
+    if(books[isbn]["author"] === req.params.author) {
+      booksbyauthor.push({"isbn":isbn,
+                          "title":books[isbn]["title"],
+                          "reviews":books[isbn]["reviews"]});
+    }
+  });
+  res.send(JSON.stringify({booksbyauthor}, null, 4));
+});
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  
-    const title = req.params.title;
-    let booklist = Object.values(books);
-    const the_book = booklist.find(item=>item.title === title);
-    res.send(the_book);
-  //return res.status(300).json({message: "Yet to be implemented 5"});
+    let booksbytitle = [];
+  let isbns = Object.keys(books);
+  isbns.forEach((isbn) => {
+    if(books[isbn]["title"] === req.params.title) {
+      booksbytitle.push({"isbn":isbn,
+                          "author":books[isbn]["author"],
+                          "reviews":books[isbn]["reviews"]});
+    }
+    });
+  res.send(JSON.stringify({booksbytitle}, null, 4));
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-   
+    //const isbn = req.params.isbn + "";
     let isbn = parseInt(req.params.isbn);
-    console.log(req.params)
-  // Filter the users array to find users whose lastName matches the extracted lastName parameter
-    isbn -=1;
-   // let the_book = booklist[book_index];
-    let the_book = books[isbn];
-    let the_reviews = the_book.reviews;
-    console.log("  The Review Found ", the_reviews );
-    res.send(the_reviews);
- // return res.status(300).json({message: "Yet to be implemented 6 ",the_book});
+    const book = books[isbn];
+    if (book) {
+        return res.status(200).json(book.reviews);
+    }
+    return res.status(404).json({ message: "Invalid ISBN" });
 });
 
-module.exports.general = public_users;
+// TASK 11 - Get book details based on ISBN using Promises
+public_users.get('/books/isbn/:isbn',function (req, res) {
+    const get_books_isbn = new Promise((resolve, reject) => {
+        const isbn = req.params.isbn;
+        // console.log(isbn);
+            if (req.params.isbn <= 10) {
+            resolve(res.send(JSON.stringify(books[isbn],null, 4)));
+        }
+            else {
+                reject(res.send('ISBN not found'));
+            }
+        });
+        get_books_isbn.
+            then(function(){
+                console.log("Promise for Task 11 is resolved");
+       }).
+            catch(function () { 
+                    console.log('ISBN not found');
+      });
 
+});
+
+    // TASK 12 - Get book details based on author
+public_users.get('/books/author/:author',function (req, res) {
+
+    const get_books_author = new Promise((resolve, reject) => {
+
+    let booksbyauthor = [];
+    let isbns = Object.keys(books);
+    isbns.forEach((isbn) => {
+      if(books[isbn]["author"] === req.params.author) {
+        booksbyauthor.push({"isbn":isbn,                    
+                            "title":books[isbn]["title"],          
+                            "reviews":books[isbn]["reviews"]});
+        //resolve(res.send(JSON.stringify({booksbyauthor}, null, 4)));
+      }
+    });
+    console.log (" Pushed everything into booksbyauthor <",booksbyauthor,">");
+    if (booksbyauthor.length>0){
+        resolve(res.send(JSON.stringify({booksbyauthor}, null, 4)));
+    }
+    else         reject(res.send("The mentioned author does not exist "))
+    })
+    get_books_author.then(function(){
+        console.log("Promise is resolved");
+    }).catch(function () { 
+            console.log('The mentioned author does not exist');
+    });
+});
+
+
+// TASK 13 - // Get all books based on title
+public_users.get('/books/title/:title',function (req, res) {
+
+    const get_books_title = new Promise((resolve, reject) => {
+
+    let booksbytitle = [];
+    let isbns = Object.keys(books);
+    isbns.forEach((isbn) =>       {
+      if(books[isbn]["title"] === req.params.title) {
+        booksbytitle.push({"isbn":isbn,
+                            "author":books[isbn]["author"],
+                            "reviews":books[isbn]["reviews"]});
+    
+       resolve(res.send(JSON.stringify({booksbytitle}, null, 4)));
+      }
+    });
+
+    reject(res.send("The mentioned title does not exist "))
+
+    });
+
+    get_books_title.then(function(){
+            console.log("Promise is resolved");
+    }).catch(function () { 
+            console.log('The mentioned book title doesnt exist');
+    });
+
+  });
+
+
+  module.exports.general = public_users;
